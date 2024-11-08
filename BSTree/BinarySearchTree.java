@@ -143,7 +143,7 @@ class BST {
             return null;
         }
 
-        BSTNode p, p2, n;
+        BSTNode p, p2;
 
         if (root.getData() == k) {
             BSTNode left = root.getLeft();
