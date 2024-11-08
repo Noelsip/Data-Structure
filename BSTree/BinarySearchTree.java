@@ -81,6 +81,13 @@ class BST {
         return current.getData();
     }
 
+    private BSTNode findMinNode(BSTNode node){
+        while (node.getLeft() != null) {
+            node = node.getLeft();
+        }
+        return node;
+    }
+
     public int findMax(){
         if (root == null) {
             throw new IllegalStateException("Tree is Empty");
@@ -159,13 +166,28 @@ class BST {
             }
         }
         if (k < root.getData()) {
-            n = delete(root.getLeft(), k);
-            root.setLeft(n);
-        } else {
-            n = delete(root.getRight(), k);
-            root.setRight(n);
+            root.setLeft(delete(root.getLeft(), k));
         }
-        return root;
+        else if (k > root.getData()) {
+            root.setRight(delete(root.getRight(), k));
+        }
+        else {
+            if (root.getLeft() == null && root.getRight() == null) {
+                return null;
+            }
+            else if (root.getLeft() == null) {
+                return root.getRight();
+            }
+            else if (root.getRight() == null) {
+                return root.getLeft();
+            }
+            else {
+                BSTNode minNode = findMinNode(root.getRight());
+                root.setData(minNode.getData());
+                root.setRight(delete(root.getRight(), minNode.getData()));
+            }
+        }
+        return root;// return the root of the updated tree
     }
 
     public boolean search(int val) {
@@ -239,7 +261,7 @@ public class BinarySearchTree {
 
         System.out.println();
         System.out.println("Inserting Value into BST");
-        int[] values = {55, 10, 54, 22, 44, 23, 78, 8, 9, 10};
+        int[] values = {13, 10, 56, 78, 44, 32, 1, 9, 7, 2};
         for (int value : values) {
             System.out.print(value + " ");
             bst.insert(value);
@@ -266,8 +288,8 @@ public class BinarySearchTree {
         System.out.println();
 
         // search and delete
-        int searchValue = 10;
-        int deleteValue = 22;
+        int searchValue = 9;
+        int deleteValue = 10;
 
         System.out.println("\nSearching for " + searchValue + ":");
         bst.search(searchValue);
