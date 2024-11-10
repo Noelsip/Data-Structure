@@ -1,5 +1,7 @@
-
 package RBTree;
+
+import java.util.Scanner;
+import java.util.ArrayList; 
 
 class RBTNode {
   char key;
@@ -113,18 +115,21 @@ class RBT {
   }
 
   private RBTNode insertRec(RBTNode root, RBTNode node) {
-      if (root == NIL) {
-          return node;
-      }
-      if (node.key < root.key) {
-          root.left = insertRec(root.left, node);
-          root.left.parent = root;
-      } else{
-          root.right = insertRec(root.right, node);
-          root.right.parent = root;
-      }
-      return root;
-  }
+    if (root == NIL) {
+        return node;
+    }
+    if (node.key < root.key) {
+        root.left = insertRec(root.left, node);
+        root.left.parent = root;
+    } else if (node.key > root.key) {
+        root.right = insertRec(root.right, node);
+        root.right.parent = root;
+    } else {
+        // Ignore duplicates
+        return root;
+    }
+    return root;
+  }    
   
   private void fixUpInsert(RBTNode node) {
       while (node != root && node.parent != NIL && node.parent.isRed) {
@@ -343,43 +348,87 @@ class RBT {
 }
 
 public class RedBlackTree {
-  public static void main(String[] args) {
-      RBT rbt = new RBT();
-      char[] keys = {'A', 'K', 'Z', 'A'};
 
-      System.out.println();
-      System.out.println("Inserting Values To Red-Black-Tree");
-      for (char key : keys) {
-          System.out.print(key + " ");
-          rbt.insert(key);
-      }
-      System.out.println();
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        RBT rbt = new RBT();
+        ArrayList<Character> insertedKeys = new ArrayList<>(); // Menyimpan list asli input
 
+        while (true) {
+            System.out.println("\n==== MENU RED-BLACK TREE ====");
+            System.out.println("1. Insert (Tambah Elemen)");
+            System.out.println("2. Search (Cari Elemen)");
+            System.out.println("3. Delete (Hapus Elemen)");
+            System.out.println("4. Display Tree (Tampilkan Struktur Tree)");
+            System.out.println("5. Traversal (Pre-order, In-order, Post-order)");
+            System.out.println("6. Exit (Keluar)");
+            System.out.print("Pilih operasi yang ingin dilakukan (1-6): ");
+            int choice = scanner.nextInt();
+            scanner.nextLine();  // Konsumsi newline setelah angka
 
-      System.out.println("");
-      
-      char searchKey = 'A';
-      RBTNode foundNode = rbt.search(searchKey);
-      if (foundNode != null) {
-        System.out.println(searchKey + "' ditemukan dalam tree.");
-      } else {
-        System.out.println(searchKey + "' tidak ditemukan dalam tree.");
-      }
-  
-      System.out.println("\nPre-order Traversal: ");
-      rbt.preorder(rbt.root);
-      System.out.println("\nIn-Order Traversal: ");
-      rbt.inOrder(rbt.root);
-      System.out.println("\nPost-Order Traversal: ");
-      rbt.postorder(rbt.root);
+            switch (choice) {
+                case 1:
+                    System.out.print("Masukkan karakter yang ingin Anda tambahkan (pisahkan dengan spasi): ");
+                    String input = scanner.nextLine();
+                    char[] keys = input.replace(" ", "").toCharArray();
+                    for (char key : keys) {
+                        rbt.insert(key);
+                        insertedKeys.add(key);  // Tambahkan ke list asli
+                        System.out.println("Menambahkan:  " + key);
+                    }
+                    break;
 
-      System.out.println("\nRed Black Tree Structure: ");
-      rbt.printTree();
+                case 2:
+                    System.out.print("Masukkan karakter yang ingin Anda cari: ");
+                    char searchKey = scanner.next().charAt(0);
+                    RBTNode foundNode = rbt.search(searchKey);
+                    if (foundNode != null && foundNode != RBT.NIL) {
+                        System.out.println(searchKey + " ditemukan dalam tree.");
+                    } else {
+                        System.out.println(searchKey + " tidak ditemukan dalam tree.");
+                    }
+                    break;
 
-      System.out.println("");
+                case 3:
+                    System.out.print("Masukkan karakter yang ingin Anda hapus: ");
+                    char deleteKey = scanner.next().charAt(0);
 
-      rbt.delete('A');
-      rbt.printTree();
-      System.out.println();
-  }
+                    if (insertedKeys.contains(deleteKey)){
+                        rbt.delete(deleteKey);
+                        insertedKeys.removeIf(key -> key == deleteKey);
+                        System.out.println("Menghapus" + deleteKey);
+                    } else {
+                        System.out.println(deleteKey + " tidak ditemukan dalam tree.");
+                    }
+                    break;
+
+                case 4:
+                    System.out.println("Struktur Red-Black Tree:");
+                    rbt.printTree();
+                    break;
+
+                case 5:
+                    System.out.println("\nKarakter yang dimasukkan dalam urutan asli: " + insertedKeys);
+
+                    System.out.println("\nTraversal Pre-order: ");
+                    rbt.preorder(rbt.root);
+
+                    System.out.println("\nTraversal In-order: ");
+                    rbt.inOrder(rbt.root);
+
+                    System.out.println("\nTraversal Post-order: ");
+                    rbt.postorder(rbt.root);
+                    System.out.println();
+                    break;
+
+                case 6:
+                    System.out.println("Keluar dari program...");
+                    scanner.close();
+                    System.exit(0);
+
+                default:
+                    System.out.println("Pilihan tidak valid. Silakan pilih antara 1-6.");
+            }
+        }
+    }
 }
