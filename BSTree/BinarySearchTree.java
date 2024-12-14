@@ -242,16 +242,14 @@ class BST {
         }
     }
 
-    public void printTree(){
-        printTree(root,0);
+    public void printTree() { 
+        printTree(root, "", true); 
     }
-
-    private void printTree(BSTNode node, int level){
-        if (node != null) {
-            printTree(node.getRight(), level+1);
-            System.out.printf("%" +(level*4 +2) + "s%n" , node.getData());
-            printTree(node.getLeft(), level+1);
-        }
+    
+    private void printTree(BSTNode node, String prefix, boolean isTail) { 
+        if (node != null) { System.out.println(prefix + (isTail ? "└── " : "├── ") + node.getData());
+        printTree(node.getLeft(), prefix + (isTail ? " " : "│ "), false);
+        printTree(node.getRight(), prefix + (isTail ? " " : "│ "), true); } 
     }
 }
 
@@ -261,7 +259,7 @@ public class BinarySearchTree {
 
         System.out.println();
         System.out.println("Inserting Value into BST");
-        int[] values = {13, 10, 56, 78, 44, 32, 1, 9, 7, 2};
+        int[] values = {73, 29, 51, 92, 14, 63, 37, 81, 46, 55, 64, 34, 102, 124, 98, 18, 8};
         for (int value : values) {
             System.out.print(value + " ");
             bst.insert(value);
@@ -299,10 +297,13 @@ public class BinarySearchTree {
         // traversal after delete
         System.out.println("\nInorder traversal after delete:");
         bst.inorder();
+        System.out.println();
         System.out.println("\nPre-order traversal after deletion");
         bst.preorder();
+        System.out.println();
         System.out.println("\nPost-order traversal after deletion");
         bst.postorder();
+        
         System.out.println();
 
     }
